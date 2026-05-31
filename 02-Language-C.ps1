@@ -1,7 +1,7 @@
 # Перевірка прав адміністратора
 if (-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
-    Write-Host "Запустіть скрипт від імені адміністратора" -ForegroundColor Red
-    exit 1
+    Start-Process powershell.exe -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs
+    exit
 }
 
 # 0. Перевірка доступності Install-Language
