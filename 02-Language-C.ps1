@@ -16,24 +16,23 @@ Set-Volume -DriveLetter C -NewFileSystemLabel "System"
 # 2. Встановлюємо базовий український мовний пакет
 Install-Language uk-UA -CopyToSettings
 
-# 3. Створюємо список мов
-$EnLang = New-WinUserLanguage "en-US"
-$UkLang = New-WinUserLanguage "uk-UA"
+# 3. Застосовуємо список мов
+Set-WinUserLanguageList "en-US", "uk-UA" -Force
 
-# 4. Українська з розширеною розкладкою
+# 4. Додаємо розширену українську розкладку
+$LangList = Get-WinUserLanguageList
+$UkLang = $LangList | Where-Object { $_.LanguageTag -eq "uk-UA" }
 $UkLang.InputMethodTips.Clear()
 $UkLang.InputMethodTips.Add("0422:00020422")
+Set-WinUserLanguageList $LangList -Force
 
-# 5. Застосовуємо список
-Set-WinUserLanguageList @($EnLang, $UkLang) -Force
-
-# 6. Регіон та локаль
+# 5. Регіон та локаль
 Set-WinUILanguageOverride -Language uk-UA
 Set-Culture uk-UA
 Set-WinSystemLocale uk-UA
 Set-WinHomeLocation -GeoId 241
 
-# 7. Копіюємо налаштування на екран входу та нових користувачів
+# 6. Копіюємо налаштування на екран входу та нових користувачів
 try {
     Copy-UserInternationalSettingsToSystem -WelcomeScreen $True -NewUser $True
 } catch {
