@@ -7,5 +7,5 @@ if %errorLevel% neq 0 (
 powershell.exe -Command "Set-ExecutionPolicy RemoteSigned -Scope LocalMachine -Force"
 if not exist "C:\temp" mkdir "C:\temp"
 powershell.exe -Command "Get-ChildItem "C:\Temp" -Recurse | Unblock-File"
-powershell.exe -ExecutionPolicy Bypass -File "%~dp000-PS-Allow.bat"
+powershell.exe -ExecutionPolicy Bypass -File "%~dp099-Download_scrtips.ps1"
 pause
