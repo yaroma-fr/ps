@@ -3,7 +3,7 @@ if (-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdenti
     Start-Process powershell.exe -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs
     exit
 }
-
+winget upgrade Microsoft.AppInstaller
 function Install-App {
     param($Name, $Id)
     Write-Host "Встановлюємо $Name..." -ForegroundColor Cyan
