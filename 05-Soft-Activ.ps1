@@ -262,5 +262,3 @@ Write-Log "=== Завершено ==="
 Write-Host ""
 Write-Host "Встановлення завершено!" -ForegroundColor Green
 Write-Host "Лог: $LogFile" -ForegroundColor Yellow
-# Активація Windows та Office:
-irm https://get.activated.win | iex
