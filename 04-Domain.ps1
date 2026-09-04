@@ -1,22 +1,88 @@
 ﻿# Перезапуск від імені адміністратора
-if (-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
-    Start-Process powershell.exe -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs
+if (-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole(
+    [Security.Principal.WindowsBuiltInRole]::Administrator))
+{
+    Start-Process powershell.exe `
+        -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" `
+        -Verb RunAs
+
     exit
 }
 
+# Підключення необхідних бібліотек
 Add-Type -AssemblyName Microsoft.VisualBasic
+Add-Type -AssemblyName System.Windows.Forms
 
-$NewName = [Microsoft.VisualBasic.Interaction]::InputBox("Введіть нову назву комп'ютера", "Перейменування", $env:COMPUTERNAME)
+# Запит нової назви комп'ютера
+$NewName = [Microsoft.VisualBasic.Interaction]::InputBox(
+    "Введіть нову назву комп'ютера",
+    "Перейменування комп'ютера",
+    $env:COMPUTERNAME
+)
 
-if ($NewName -eq "") {
-    Write-Host "Назву не введено, скрипт зупинено" -ForegroundColor Red
+# Перевірка введення
+if (:IsNullOrWhiteSpace($NewName))
+{
+    [System.Windows.Forms.MessageBox]::Show(
+        "Назву комп'ютера не введено. Роботу скрипта скасовано.",
+        "Скасовано",
+        [System.Windows.Forms.MessageBoxButtons]::OK,
+        [System.Windows.Forms.MessageBoxIcon]::Warning
+    )
+
     exit 1
 }
 
-Write-Host "Перейменовуємо та вводимо в домен..." -ForegroundColor Cyan
+try
+{
+    Write-Host "Запит облікових даних..." -ForegroundColor Cyan
 
-Add-Computer -DomainName "adsapience.com" -NewName $NewName -Credential (Get-Credential)
+    $Credential = Get-Credential -Message "Введіть облікові дані для приєднання до домену"
 
-Write-Host "УВАГА: для застосування змін потрібно перезавантажити комп'ютер." -ForegroundColor Yellow
+    Write-Host "Перейменування комп'ютера та приєднання до домену..." -ForegroundColor Cyan
 
-Read-Host -Prompt "Натисніть Enter для виходу"
+    Add-Computer `
+        -DomainName "adsapience.com" `
+        -NewName $NewName `
+        -Credential $Credential `
+        -ErrorAction Stop
+
+    Write-Host "Операцію успішно завершено." -ForegroundColor Green
+
+    $Result = [System.Windows.Forms.MessageBox]::Show(
+        "Комп'ютер успішно перейменовано та додано до домену ADSapience.$(:NewLine)$(:NewLine)Перезавантажити комп'ютер зараз?",
+        "Потрібне перезавантаження",
+        [System.Windows.Forms.MessageBoxButtons]::YesNo,
+        [System.Windows.Forms.MessageBoxIcon]::Question
+    )
+
+    if ($Result -eq [System.Windows.Forms.DialogResult]::Yes)
+    {
+        Write-Host "Перезавантаження..." -ForegroundColor Cyan
+        Restart-Computer -Force
+    }
+    else
+    {
+        [System.Windows.Forms.MessageBox]::Show(
+            "Перезавантаження відкладено. Виконайте його вручну для завершення приєднання до домену.",
+            "Увага",
+            [System.Windows.Forms.MessageBoxButtons]::OK,
+            [System.Windows.Forms.MessageBoxIcon]::Information
+        )
+    }
+}
+catch
+{
+    $ErrorMessage = $_.Exception.Message
+
+    Write-Host "Помилка: $ErrorMessage" -ForegroundColor Red
+
+    [System.Windows.Forms.MessageBox]::Show(
+        "Під час перейменування або приєднання до домену сталася помилка:`n`n$ErrorMessage",
+        "Помилка",
+        [System.Windows.Forms.MessageBoxButtons]::OK,
+        [System.Windows.Forms.MessageBoxIcon]::Error
+    )
+
+    exit 1
+}
