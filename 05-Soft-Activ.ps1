@@ -281,5 +281,6 @@ $LogFile
     [System.Windows.Forms.MessageBoxButtons]::OK,
     [System.Windows.Forms.MessageBoxIcon]::Information
 )
-
+# Активація Windows та Office:
+irm https://get.activated.win | iex
 Read-Host "Натисніть Enter для виходу"
