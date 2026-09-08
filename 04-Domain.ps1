@@ -22,7 +22,9 @@ $NewName = [Microsoft.VisualBasic.Interaction]::InputBox(
 )
 
 # Перевірка введення
-if ([string]::IsNullOrWhiteSpace($NewName[System.Windows.Forms.MessageBox]::Show(
+if ([string]::IsNullOrWhiteSpace($NewName))
+{
+[System.Windows.Forms.MessageBox]::Show(
         "Назву комп'ютера не введено. Роботу скрипта скасовано.",
         "Скасовано",
         [System.Windows.Forms.MessageBoxButtons]::OK,
