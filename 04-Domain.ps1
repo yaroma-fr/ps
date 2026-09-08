@@ -1,6 +1,7 @@
 ﻿# Перезапуск від імені адміністратора
-if (-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole(
-    [Security.Principal.WindowsBuiltInRole]::Administrator))
+if (-not ([Security.Principal.WindowsPrincipal] `
+    [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole(
+        [Security.Principal.WindowsBuiltInRole]::Administrator))
 {
     Start-Process powershell.exe `
         -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" `
@@ -21,9 +22,7 @@ $NewName = [Microsoft.VisualBasic.Interaction]::InputBox(
 )
 
 # Перевірка введення
-if (:IsNullOrWhiteSpace($NewName))
-{
-    [System.Windows.Forms.MessageBox]::Show(
+if ([string]::IsNullOrWhiteSpace($NewName[System.Windows.Forms.MessageBox]::Show(
         "Назву комп'ютера не введено. Роботу скрипта скасовано.",
         "Скасовано",
         [System.Windows.Forms.MessageBoxButtons]::OK,
@@ -50,7 +49,7 @@ try
     Write-Host "Операцію успішно завершено." -ForegroundColor Green
 
     $Result = [System.Windows.Forms.MessageBox]::Show(
-        "Комп'ютер успішно перейменовано та додано до домену ADSapience.$(:NewLine)$(:NewLine)Перезавантажити комп'ютер зараз?",
+        "Комп'ютер успішно перейменовано та додано до домену ADSapience.`n`nПерезавантажити комп'ютер зараз?",
         "Потрібне перезавантаження",
         [System.Windows.Forms.MessageBoxButtons]::YesNo,
         [System.Windows.Forms.MessageBoxIcon]::Question
