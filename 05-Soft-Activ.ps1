@@ -101,6 +101,7 @@ $Apps = @(
     @{ Name = "HP Support Assistant";   Id = "HPInc.HPSupportAssistant" }
     @{ Name = "Intel Driver Assistant"; Id = "Intel.IntelDriverAndSupportAssistant" }
     @{ Name = "Microsoft 365 Apps";     Id = "Microsoft.Office" }
+    @{ Name = "Zoom Workplace";         Id = "Zoom.Zoom.EXE" }
 )
 
 # ==========================================
