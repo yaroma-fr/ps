@@ -102,6 +102,8 @@ $Apps = @(
     @{ Name = "Intel Driver Assistant"; Id = "Intel.IntelDriverAndSupportAssistant" }
     @{ Name = "Microsoft 365 Apps";     Id = "Microsoft.Office" }
     @{ Name = "Zoom Workplace";         Id = "Zoom.Zoom.EXE" }
+    @{ Name = "Viber";        Id = "Rakuten.Viber" }
+    @{ Name = "Telegram";    Id = "Telegram.TelegramDesktop" }
 )
 
 # ==========================================
